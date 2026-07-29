@@ -22,7 +22,7 @@
 
 | 항목 | 내용 |
 |---|---|
-| OS | `Darwin 24.6.0` |
+| OS | `macOS` |
 | Shell / Terminal | `zsh` |
 | Docker Version | `28.5.2` |
 | Git Version | `2.53.0` |
