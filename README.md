@@ -109,14 +109,18 @@ $ ls -la
 ### 2-4. 디렉토리 생성
 
 ```bash
+$ ls
+README.md
 $ mkdir test
+$ ls
+README.md       test
 ```
 
 ### 2-5. 디렉토리 이동
-
 ```bash
+$ pwd
+/Users/ajj05062587/first_work
 $ cd test/
-
 $ pwd
 출력 결과
 /Users/ajj05062587/first_work/test
@@ -125,11 +129,12 @@ $ pwd
 ### 2-6. 파일 생성
 
 ```bash
+$ ls
+README.md test
 $ echo "hello world" > sample.txt
-
-$ ls -la
+$ ls
 출력 결과
-.               ..              sample.txt
+README.md       sample.txt      test
 ```
 
 ### 2-7. 파일 내용 확인
@@ -144,47 +149,59 @@ hello world
 ### 2-8. 빈 파일 생성
 
 ```bash
+$ ls
+README.md       sample.txt      test
 $ touch empty.txt
-
-$ ls -la
+$ ls
 출력 결과
-.               ..              empty_file.txt  sample.txt
+empty.txt       README.md       sample.txt      test
 ```
 
 ### 2-9. 파일 복사
 
 ```bash
+$ ls
+empty.txt       README.md       sample.txt      test
 $ cp sample.txt sample-copy.txt
-
-$ ls -la
+$ ls
 출력 결과
-.               ..              empty_file.txt  sample-copy.txt sample.txt
+empty.txt       README.md       sample-copy.txt sample.txt      test
 ```
 
 ### 2-10. 파일 이동 / 이름 변경
 
 ```bash
-$ mv sample-copy.txt ../first_work
+파일 이동
+$ ls
+empty.txt       README.md       sample-copy.txt sample.txt      test
+$ mv sample-copy.txt test/
+$ ls
+empty.txt       README.md       sample.txt      test
+$ cd test
+$ ls
+sample-copy.txt
 
-$ ls -a
+
+이름 변경
+$ ls
+sample-copy.txt
+$ mv sample-copy.txt changed.txt
+$ ls
 출력 결과
-.               ..              empty_file.txt  sample.txt
-
-$ mv sample.txt changed.txt
-
-$ ls -a
-출력 결과
-.               ..              changed.txt     empty_file.txt
+changed.txt
 ```
 
 ### 2-11. 파일 삭제
 
 ```bash
+$ pwd
+/Users/ajj05062587/first_work/test
+$ ls
+changed.txt
 $ rm changed.txt
-
 $ ls -a
 출력 결과
-.               ..              changed.txt     empty_file.txt
+.       ..
 ```
 
 ---
@@ -196,31 +213,24 @@ $ ls -a
 ### 변경 전 권한 확인
 
 ```bash
-$ ls -l sample.txt
+$ ls -l sample-copy.txt
 출력 결과
-total 40
--rw-r--r--@ 1 ajj05062587  ajj05062587  13617 Jul 28 10:09 README.md
--rw-r--r--  1 ajj05062587  ajj05062587     12 Jul 28 09:55 sample-copy.txt
-drwxr-xr-x  3 ajj05062587  ajj05062587     96 Jul 28 10:05 test
+-rw-r--r--  1 ajj05062587  ajj05062587  12  7 29 09:35 sample.txt
 ```
 
 ### 파일 권한 변경
 
 ```bash
-$ chmod 600 sample.txt
+$ chmod 755 sample.txt
 ```
 
 ### 변경 후 권한 확인
 
 ```bash
-$ chmod 600 sample-copy.txt
 $ ls -l sample.txt
 
 출력 결과
-total 40
--rw-r--r--@ 1 ajj05062587  ajj05062587  13617 Jul 28 10:09 README.md
--rw-------  1 ajj05062587  ajj05062587     12 Jul 28 09:55 sample-copy.txt
-drwxr-xr-x  3 ajj05062587  ajj05062587     96 Jul 28 10:05 test
+-rwxr-xr-x  1 ajj05062587  ajj05062587  12  7 29 09:35 sample.txt
 ```
 
 ### 파일 권한 비교
@@ -228,9 +238,11 @@ drwxr-xr-x  3 ajj05062587  ajj05062587     96 Jul 28 10:05 test
 | 구분 | 권한 |
 |---|---|
 | 변경 전 | `-rw-r--r-- ` |
-| 변경 후 | `-rw-------` |
+| 변경 후 | `-rwxr-xr-x` |
 
-`chmod 600`은 파일 소유자만 읽기 및 쓰기만 가능하며, 실행은 권한이 없다. 그룹, 기타 사용자는 읽기/쓰기/실행 권한이 없다.
+`chomod 755`의 의미는 파일 소유자에게는 읽기, 쓰기, 실행의 권한을 주며 그 외 사용자에게는 읽기, 쓰기만의 권한을 준다는 뜻이다.
+여기서 파일의 권한은 읽기(r) 4 / 쓰기(w) 2 / 실행 (x) 1로 분류된다.
+그리고 각각의 숫자는 0과 1을 조합한 권한을 의미하여 3개의 비트로 구성된다.
 
 ---
 
@@ -241,19 +253,20 @@ drwxr-xr-x  3 ajj05062587  ajj05062587     96 Jul 28 10:05 test
 ```bash
 $ mkdir permission-test
 $ ls
-permission-test README.md       sample-copy.txt test
+empty.txt       permission-test README.md       sample.txt      test
 ```
 
 ### 변경 전 권한 확인
 
 ```bash
-$ ls -l permission-test
+$ ls -l
 출력 결과
-total 40
-drwxr-xr-x  2 ajj05062587  ajj05062587     64 Jul 28 10:27 permission-test
--rw-r--r--@ 1 ajj05062587  ajj05062587  14124 Jul 28 10:27 README.md
--rw-r--r--  1 ajj05062587  ajj05062587     12 Jul 28 09:55 sample-copy.txt
-drwxr-xr-x  3 ajj05062587  ajj05062587     96 Jul 28 10:05 test
+total 56
+-rw-r--r--  1 ajj05062587  ajj05062587      0  7 29 09:35 empty.txt
+drwxr-xr-x  2 ajj05062587  ajj05062587     64  7 29 09:41 permission-test
+-rw-r--r--@ 1 ajj05062587  ajj05062587  21975  7 29 09:41 README.md
+-rwxr-xr-x  1 ajj05062587  ajj05062587     12  7 29 09:35 sample.txt
+drwxr-xr-x  2 ajj05062587  ajj05062587     64  7 29 09:39 test
 ```
 
 ### 디렉토리 권한 변경
@@ -265,12 +278,13 @@ $ chmod 700 permission-test
 ### 변경 후 권한 확인
 
 ```bash
-$ ls -l permission-test
-total 40
-drwx------  2 ajj05062587  ajj05062587     64 Jul 28 10:27 permission-test
--rw-r--r--@ 1 ajj05062587  ajj05062587  14465 Jul 28 10:31 README.md
--rw-r--r--  1 ajj05062587  ajj05062587     12 Jul 28 09:55 sample-copy.txt
-drwxr-xr-x  3 ajj05062587  ajj05062587     96 Jul 28 10:05 test
+$ ls -l
+total 56
+-rw-r--r--  1 ajj05062587  ajj05062587      0  7 29 09:35 empty.txt
+drw-r--r--  2 ajj05062587  ajj05062587     64  7 29 09:41 permission-test
+-rw-r--r--@ 1 ajj05062587  ajj05062587  21975  7 29 09:41 README.md
+-rwxr-xr-x  1 ajj05062587  ajj05062587     12  7 29 09:35 sample.txt
+drwxr-xr-x  2 ajj05062587  ajj05062587     64  7 29 09:39 test
 ```
 
 ### 디렉토리 권한 비교
@@ -278,9 +292,9 @@ drwxr-xr-x  3 ajj05062587  ajj05062587     96 Jul 28 10:05 test
 | 구분 | 권한 |
 |---|---|
 | 변경 전 | `drwxr-xr-x` |
-| 변경 후 | `drwx------` |
+| 변경 후 | `drw-r--r--` |
 
-`chmod 700`은 디렉토리 소유자만 접근, 읽기, 쓰기, 실행이 가능하도록 설정한다. 그외 그룹, 기타 사용자는 권한이 없다.
+`chmod 644`는 폴더 소유자에게는 읽기, 쓰기의 권한이 부여되며, 그 외 Group, Other 사용자에게는 읽기의 권한만 부여된다.
 
 ---
 
