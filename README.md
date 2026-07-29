@@ -839,14 +839,18 @@ user.name=JoongHyun-codyssey
 user.email=dkswndgus0506@gmail.com
 init.defaultbranch=main
 remote.origin.url=https://github.com/JoongHyun-codyssey/codyssey_repo.git
-![Git 사용자 정보/기본 브랜치 설정, GitHub 저장소 연동](/images/Git,%20GitHub.png)
 ```
+![Git 사용자 정보/기본 브랜치 설정, GitHub 저장소 연동](/images/Git,%20GitHub.png)
 
 GitHub Repository 링크:
 
 ```text
 https://github.com/JoongHyun-codyssey
 ```
+
+GitHub 연동
+![GitHub 커밋/푸시 기록](/images/GitHub%20커밋:푸시%20기록.png)
+
 
 ---
 
