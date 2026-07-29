@@ -23,7 +23,7 @@
 | 항목 | 내용 |
 |---|---|
 | OS | `macOS` |
-| Shell / Terminal | `zsh` |
+| Shell / Terminal | `bash` |
 | Docker Version | `28.5.2` |
 | Git Version | `2.53.0` |
 | 작업 디렉토리 | `/first_work` |
