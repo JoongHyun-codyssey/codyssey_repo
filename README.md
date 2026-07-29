@@ -322,12 +322,21 @@ Storage Driver: overlay2
 Cgroup Driver: cgroupfs
 Cgroup Version: 2
 ```
+![docker info image](/images/docker%20info.png)
 
 확인 결과:
 
 - Docker 데몬 동작 여부: `정상`
 - 특이사항: `WARNING: DOCKER_INSECURE_NO_IPTABLES_RAW is set`
     - iptable raw 테이블 사용이 비활성화된 상태이므로, 일부 네트워크 보안 규칙이 적용되지 않을 수 있음.
+
+가설:
+Docker가 실행되는 환경에서 `iptables raw` 기능을 사용할 수 없거나, 관련 환경변수가 설정되어 해당 경고가 출력된 것으로 추정
+
+조치:
+`docker info` 결과를 확인한 결과 Docker 데몬은 정상적으로 동작했으며, 컨테이너 실행 및 포트 매핑에도 문제가 없음을 확인.
+따라서 실습 환경에서는 해당 경고를 기록하고 실습을 계속 진행하였다.
+운영 환경에서는 iptables raw 기능 지원 여부와 Docker 설정을 추가로 확인하여 보안 정책이 정상적으로 적용되는지 점검하는 것이 바람직하다.
 
 ---
 
@@ -381,6 +390,10 @@ Share images, automate workflows, and more with a free Docker ID:
 For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 
+
+$ docker ps -a
+CONTAINER ID   IMAGE                 COMMAND                   CREATED          STATUS                      PORTS                                     NAMES
+94f28e38b08a   hello-world           "/hello"                  10 seconds ago   Exited (0) 10 seconds ago                                          priceless_dubinsky
 ```
 
 ## 5-4. 실행 중인 컨테이너 목록 확인
@@ -533,12 +546,13 @@ root@a31262f819ab:/#
 
 | 명령 | 특징 |
 |---|---|
-| `docker exec` | 실행 중인 컨테이너에 새로운 프로세스를 추가로 실행한다. 주로 컨테이너 내부에 접속해 명령을 실행할 때 사용한다. |
-| `docker attach` | 컨테이너의 기존 메인 프로세스에 연결한다. attach 상태에서 종료 방식에 따라 컨테이너가 함께 종료될 수 있다. |
+| `docker exec` | 이미 실행 중인 컨테이너에 새로운 프로세스를 실행한다. 주로 컨테이너 내부에 접속해 명령을 실행할 때 사용한다. |
+| `docker attach` | 컨테이너의 기존 메인 프로세스에 연결한다. attach 상태에서 종료 방식에 따라 메인 프로세스에 종료 신호가 전달되어 컨테이너가 함께 종료될 수 있다. |
 
 내가 관찰한 차이:
 
-> exec는 컨테이너를 실행함과 동시에 또 다른 프로세스를 실행하고 attach는 컨테이너에 연결하여 프로세스를 실행하는 느낌이다. 또한 attach를 종료하면 컨테이너도 같이 종료된다.
+> docker exec로 /bin/bash 를 실행한 뒤 exit를 입력해도 컨테이너는 종료되지 않았다. 하지만 docker attach로 연결한 후 ctrl + c로 종료하자 컨테이너도 같이 종료되는것을 확인했다.
+
 
 ---
 
@@ -552,7 +566,6 @@ root@a31262f819ab:/#
 - [ ] B. Linux 베이스 이미지 활용
 
 사용한 베이스 이미지:
-
 ```text
 nginx:alpine
 ```
@@ -564,11 +577,6 @@ nginx:alpine
 ---
 
 ## 7-2. 프로젝트 구조
-
-```bash
-$ tree
-[출력 붙여넣기]
-```
 
 예상 구조:
 
@@ -590,7 +598,7 @@ LABEL org.opencontainers.image.description="Dockerfile practice with nginx alpin
 
 ENV APP_ENV=dev
 
-COPY site/ /usr/share/nginx/html/
+COPY index.html /usr/share/nginx/html/index.html
 
 EXPOSE 80
 ```
@@ -610,18 +618,19 @@ EXPOSE 80
 ## 7-4. 정적 페이지 작성
 
 ```bash
-$ mkdir -p site
+$ mkdir my-nginx
 
-$ cat > site/index.html << 'EOF'
+$ cat > my-nginx/index.html << 'EOF'
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Custom Nginx Practice</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom NGINX</title>
 </head>
 <body>
-  <h1>Hello Docker Custom Nginx</h1>
-  <p>This page is served from a custom Docker image.</p>
+    <h1>Hello World</h1>
+    <p>커스텀 이미지</p>
 </body>
 </html>
 EOF
@@ -702,18 +711,23 @@ $ docker ps
 출력 결과
 CONTAINER ID   IMAGE                 COMMAND                   CREATED          STATUS          PORTS                                         NAMES
 6dd57872e9cb   my-custom-nginx:1.0   "/docker-entrypoint.…"   27 seconds ago   Up 27 seconds   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp       my-nginx-8080
-![핵심 결과](./images/7%20핵심결과%20스크린샷.png)
+![핵심 결과](/images/7%20핵심결과%20스크린샷.png)
 ```
 
 ---
 
 ## 8. 포트 매핑 및 접속 증거
+```bash
+$ docker run -d -p 8080:80 --name my-nginx-8080 my-custom-nginx:1.0
+```
+컨테이너는 별도의 네트워크 네임스페이스를 사용하기 때문에 호스트와 네트워크가 분리되어 있다. 따라서 컨테이너 내부에서 실행중인 Nginx의 80번 포트에 호스트에서 접근하려면 -p 8080:80과 같은 포트 매핑이 필요하다.
+포트를 공개하면 외부의 접근이 가능해지므로 필요한 포트만 노출해야 된다.
 
 ## 8-1. curl 접속 확인
 
 ```bash
 $ curl http://localhost:8080
-출력 결과
+결과
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -726,6 +740,23 @@ $ curl http://localhost:8080
     <p>커스텀 이미지</p>
 </body>
 ```
+![브라우저 접속 기록](/images/브라우저%20접속%20기록.png)
+
+## 8-2 포트 충돌 진단
+```bash
+포트 확인
+$ lsof -i :[포트번호]
+COMMAND     PID        USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+OrbStack  39392 ajj05062587   85u  IPv4 0x8cb473601b48df4f      0t0  TCP *:http-alt (LISTEN)
+OrbStack  39392 ajj05062587   86u  IPv6 0xd820eaa1f86f2d54      0t0  TCP *:http-alt (LISTEN)
+
+프로세스 확인
+$ docker ps --filter pbulish=[포트번호]
+CONTAINER ID   IMAGE                 COMMAND                   CREATED        STATUS          PORTS                                     NAMES
+6dd57872e9cb   my-custom-nginx:1.0   "/docker-entrypoint.…"   20 hours ago   Up 50 minutes   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   my-nginx-8080
+
+포트 변경
+$ docker run -p [변경할 호스트 포트번호]:[컨테이너 포트 번호] nginx
 
 ---
 
@@ -783,7 +814,6 @@ $ docker rm -f connect-vol
 ```
 
 삭제 확인:
-
 ```bash
 $ docker ps -a
 ONTAINER ID   IMAGE                 COMMAND                   CREATED          STATUS                   PORTS                                         NAMES
