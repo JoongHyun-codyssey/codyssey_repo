@@ -1,4 +1,4 @@
-# Docker / Linux / Git 실습 과제
+# 내 컴퓨터에 개발자용 '작업실' 꾸미기 실습 과제
 
 ## 0. 프로젝트 개요
 
@@ -15,38 +15,6 @@
 - Docker 볼륨을 이용한 데이터 영속성 검증
 - Git 설정 및 GitHub 저장소 연동
 - 민감정보 보호 및 기록 관리
-
----
-
-## 1. 실행 환경
-
-| 항목 | 내용 |
-|---|---|
-| OS | `macOS` |
-| Shell / Terminal | `bash` |
-| Docker Version | `28.5.2` |
-| Git Version | `2.53.0` |
-| 작업 디렉토리 | `/first_work` |
-
-### 실행 환경 확인 명령
-
-```bash
-$ uname -a
-출력 결과
-Darwin c6r4s8.codyssey.kr 24.6.0 Darwin Kernel Version 24.6.0: Mon Jan 19 22:00:10 PST 2026; root:xnu-11417.140.69.708.3~1/RELEASE_X86_64 x86_64
-
-$ echo $SHELL
-출력 결과
-/bin/zsh
-
-$ docker --version
-출력 결과
-Docker version 28.5.2, build ecc6942
-
-$ git --version
-출력 결과
-git version 2.53.0
-```
 
 ---
 
@@ -80,6 +48,37 @@ git version 2.53.0
 
 ---
 
+## 1. 실행 환경
+
+| 항목 | 내용 |
+|---|---|
+| OS | `macOS` |
+| Shell / Terminal | `bash` / `VSCode 통합 터미널` |
+| Docker Version / Context | `28.5.2` / `orbstack` |
+| Git Version | `2.53.0` |
+
+### 실행 환경 확인
+```bash
+$ uname -a
+출력 결과
+Darwin c6r4s8.codyssey.kr 24.6.0 Darwin Kernel Version 24.6.0: Mon Jan 19 22:00:10 PST 2026; root:xnu-11417.140.69.708.3~1/RELEASE_X86_64 x86_64
+
+$ chsh -s /bin/bash
+$ echo $SHELL
+출력 결과
+/bin/zsh
+
+$ docker --version
+출력 결과
+Docker version 28.5.2, build ecc6942
+
+$ git --version
+출력 결과
+git version 2.53.0
+```
+
+---
+
 ## 2. 터미널 기본 조작 로그
 
 ### 2-1. 현재 위치 확인 - 절대경로
@@ -101,7 +100,7 @@ README.md
 ### 2-3. 숨김 파일 포함 목록 확인
 
 ```bash
-$ ls -la
+$ ls -a
 출력 결과
 .               ..              .git            README.md
 ```
@@ -111,6 +110,7 @@ $ ls -la
 ```bash
 $ ls
 README.md
+> $ mkdir [디렉토리 명]
 $ mkdir test
 $ ls
 README.md       test
@@ -120,6 +120,7 @@ README.md       test
 ```bash
 $ pwd
 /Users/ajj05062587/first_work
+> $ cd [이동할 경로]
 $ cd test/
 $ pwd
 출력 결과
@@ -140,8 +141,9 @@ README.md       sample.txt      test
 ### 2-7. 파일 내용 확인
 
 ```bash
-$ cat sample.txt
+$ cat [파일명]
 
+$ cat sample.txt
 출력 결과
 hello world
 ```
@@ -151,6 +153,7 @@ hello world
 ```bash
 $ ls
 README.md       sample.txt      test
+> 사용 예시 : $ touch [파일 이름].[확장자]
 $ touch empty.txt
 $ ls
 출력 결과
@@ -162,6 +165,7 @@ empty.txt       README.md       sample.txt      test
 ```bash
 $ ls
 empty.txt       README.md       sample.txt      test
+> 사용 예시 : $ cp [복사할 대상] [복사할 대상 or 복사할 경로/]
 $ cp sample.txt sample-copy.txt
 $ ls
 출력 결과
@@ -174,6 +178,9 @@ empty.txt       README.md       sample-copy.txt sample.txt      test
 파일 이동
 $ ls
 empty.txt       README.md       sample-copy.txt sample.txt      test
+
+> 사용 예시 : $ mv [이동할 파일] [경로]
+
 $ mv sample-copy.txt test/
 $ ls
 empty.txt       README.md       sample.txt      test
@@ -183,8 +190,13 @@ sample-copy.txt
 
 
 이름 변경
+$ pwd
+/Users/ajj05062587/first_work/test
 $ ls
 sample-copy.txt
+
+> 사용 예시 : $ mv [파일 대상] [변경 할 파일 명]
+
 $ mv sample-copy.txt changed.txt
 $ ls
 출력 결과
@@ -656,25 +668,6 @@ $ docker build -t my-custom-nginx:1.0 .
  => => transferring context: 299B                                                   0.0s
  => [1/2] FROM docker.io/library/nginx:alpine@sha256:4a73073bd557c65b759505da03789  3.1s
  => => resolve docker.io/library/nginx:alpine@sha256:4a73073bd557c65b759505da03789  0.2s
- => => sha256:4a73073bd557c65b759505da037898b61f1be6cbcc3c2c3aea 10.33kB / 10.33kB  0.0s
- => => sha256:1d40e3eb3bf4f138de1d67193f2aa5309fcaf343eb5ffadbf5e9 2.50kB / 2.50kB  0.0s
- => => sha256:f0ba77f796e57c6fa89ae7f4fdad1665d6fcbd8e3f21153512 12.32kB / 12.32kB  0.0s
- => => sha256:1223f016b4e4a2c21f7c49d4837fbfd47a9da6436b511690ca1e582f 627B / 627B  0.3s
- => => sha256:3cd534fe98c64d68a1f4f1c83abb8d5cba7ecfd7be88e5923899 1.89MB / 1.89MB  0.5s
- => => sha256:55afa1ecc21d2bb5e5045f32dafee56272ffd89860bac26f6c32 3.85MB / 3.85MB  0.7s
- => => sha256:62bec68d7c31c4c8a19d812d84da5f7748e54690c037979945b6c5b6 957B / 957B  0.8s
- => => sha256:46f977ee452f4399c208714afa034868d6056864f8a0cf3c643ab143 404B / 404B  0.8s
- => => extracting sha256:55afa1ecc21d2bb5e5045f32dafee56272ffd89860bac26f6c3212343  0.1s
- => => sha256:46519e7231d2eb5604df229beb44d59719a489eaa7aca52982 20.31MB / 20.31MB  1.3s
- => => extracting sha256:3cd534fe98c64d68a1f4f1c83abb8d5cba7ecfd7be88e592389929d12  0.1s
- => => sha256:d0008c891db48b5f526d914bce9e8d889fe1a9d1f08291ae03fe 1.21kB / 1.21kB  1.3s
- => => sha256:390dc935348d8070e695fbaae2a4bb114fb9e69c59f628e75760 1.40kB / 1.40kB  1.1s
- => => extracting sha256:1223f016b4e4a2c21f7c49d4837fbfd47a9da6436b511690ca1e582fc  0.0s
- => => extracting sha256:62bec68d7c31c4c8a19d812d84da5f7748e54690c037979945b6c5b6c  0.0s
- => => extracting sha256:46f977ee452f4399c208714afa034868d6056864f8a0cf3c643ab143d  0.0s
- => => extracting sha256:d0008c891db48b5f526d914bce9e8d889fe1a9d1f08291ae03fe97f87  0.0s
- => => extracting sha256:390dc935348d8070e695fbaae2a4bb114fb9e69c59f628e7576036ee9  0.0s
- => => extracting sha256:46519e7231d2eb5604df229beb44d59719a489eaa7aca52982535a010  0.3s
  => [2/2] COPY index.html /usr/share/nginx/html/index.html                          0.3s
  => exporting to image                                                              0.2s
  => => exporting layers                                                             0.1s
