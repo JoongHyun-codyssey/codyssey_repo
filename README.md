@@ -342,16 +342,6 @@ Cgroup Version: 2
 확인 결과:
 
 - Docker 데몬 동작 여부: `정상`
-- 특이사항: `WARNING: DOCKER_INSECURE_NO_IPTABLES_RAW is set`
-    - iptable raw 테이블 사용이 비활성화된 상태이므로, 일부 네트워크 보안 규칙이 적용되지 않을 수 있음.
-
-가설:
-Docker가 실행되는 환경에서 `iptables raw` 기능을 사용할 수 없거나, 관련 환경변수가 설정되어 해당 경고가 출력된 것으로 추정
-
-조치:
-`docker info` 결과를 확인한 결과 Docker 데몬은 정상적으로 동작했으며, 컨테이너 실행 및 포트 매핑에도 문제가 없음을 확인.
-따라서 실습 환경에서는 해당 경고를 기록하고 실습을 계속 진행하였다.
-운영 환경에서는 iptables raw 기능 지원 여부와 Docker 설정을 추가로 확인하여 보안 정책이 정상적으로 적용되는지 점검하는 것이 바람직하다.
 
 ---
 
@@ -383,27 +373,10 @@ hello-world   latest    e2ac70e7319a   4 months ago   10.1kB
 
 ```bash
 $ docker run hello-world
+
 출력 결과
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
-
-To generate this message, Docker took the following steps:
- 1. The Docker client contacted the Docker daemon.
- 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
-    (amd64)
- 3. The Docker daemon created a new container from that image which runs the
-    executable that produces the output you are currently reading.
- 4. The Docker daemon streamed that output to the Docker client, which sent it
-    to your terminal.
-
-To try something more ambitious, you can run an Ubuntu container with:
- $ docker run -it ubuntu bash
-
-Share images, automate workflows, and more with a free Docker ID:
- https://hub.docker.com/
-
-For more examples and ideas, visit:
- https://docs.docker.com/get-started/
 
 
 $ docker ps -a
@@ -432,27 +405,11 @@ ae8cc6ba4cad   hello-world   "/hello"   5 seconds ago   Exited (0) 4 seconds ago
 
 ```bash
 $ docker logs hello-world
+
 출력 결과
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
 
-To generate this message, Docker took the following steps:
- 1. The Docker client contacted the Docker daemon.
- 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
-    (amd64)
- 3. The Docker daemon created a new container from that image which runs the
-    executable that produces the output you are currently reading.
- 4. The Docker daemon streamed that output to the Docker client, which sent it
-    to your terminal.
-
-To try something more ambitious, you can run an Ubuntu container with:
- $ docker run -it ubuntu bash
-
-Share images, automate workflows, and more with a free Docker ID:
- https://hub.docker.com/
-
-For more examples and ideas, visit:
- https://docs.docker.com/get-started/
 ```
 
 ## 5-7. Docker 리소스 확인
@@ -472,28 +429,11 @@ CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT   MEM %     NET I/O   BLOCK
 
 ```bash
 $ docker run hello-world
-출력 결과
 
+출력 결과
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
 
-To generate this message, Docker took the following steps:
- 1. The Docker client contacted the Docker daemon.
- 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
-    (amd64)
- 3. The Docker daemon created a new container from that image which runs the
-    executable that produces the output you are currently reading.
- 4. The Docker daemon streamed that output to the Docker client, which sent it
-    to your terminal.
-
-To try something more ambitious, you can run an Ubuntu container with:
- $ docker run -it ubuntu bash
-
-Share images, automate workflows, and more with a free Docker ID:
- https://hub.docker.com/
-
-For more examples and ideas, visit:
- https://docs.docker.com/get-started/
 ```
 
 실행 결과 요약:
@@ -886,3 +826,23 @@ GitHub 연동
 |---|---|---|
 | 실행 환경 확인 | `docker --version`, `git --version`, `uname -a` | README 1장 |
 | 터미널 기본 조작 | `pwd`, `ls -la`, `mkdir`, `cp`, `mv`, `rm`, `cat`, `touch
+
+## 12. 트러블 슈팅
+- 특이사항: `WARNING: DOCKER_INSECURE_NO_IPTABLES_RAW is set`
+    - iptable raw 테이블 사용이 비활성화된 상태이므로, 일부 네트워크 보안 규칙이 적용되지 않을 수 있음.
+
+가설:
+Docker가 실행되는 환경에서 `iptables raw` 기능을 사용할 수 없거나, 관련 환경변수가 설정되어 해당 경고가 출력된 것으로 추정
+
+조치:
+`docker info` 결과를 확인한 결과 Docker 데몬은 정상적으로 동작했으며, 컨테이너 실행 및 포트 매핑에도 문제가 없음을 확인.
+따라서 실습 환경에서는 해당 경고를 기록하고 실습을 계속 진행하였다.
+운영 환경에서는 iptables raw 기능 지원 여부와 Docker 설정을 추가로 확인하여 보안 정책이 정상적으로 적용되는지 점검하는 것이 바람직하다.
+
+
+- 특이사항: `Docker 데몬이 실행되지 않은 상태`
+    - 문제사항: Docker 데몬이 실행되고 있지 않은 상태에서 Docker 명령어를 실행했지만 데몬에 연결할 수 없다는 오류가 발생했습니다.
+    > Cannot connect to the Docker daemon. Is the docker daemon running?
+    - 원인 가설 : orbstack이 실행되지 않아 Docker 데몬이 비활성화되었고, 그 결과 Docker CLI가 데몬과 통신하지 못해 명령어가 정상적으로 실행되지 않는 것으로 판단했습니다.
+    - 확인: docker info로 Docker 데몬이 비활성화 되어있는지 확인.
+    - 조치 : orbstack을 실행한 후 다시 docker info로 먼저 확인 후 Docker 명령어를 다시 실행했습니다.
