@@ -707,8 +707,8 @@ $ docker ps
 출력 결과
 CONTAINER ID   IMAGE                 COMMAND                   CREATED          STATUS          PORTS                                         NAMES
 6dd57872e9cb   my-custom-nginx:1.0   "/docker-entrypoint.…"   27 seconds ago   Up 27 seconds   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp       my-nginx-8080
-![핵심 결과](/images/7%20핵심결과%20스크린샷.png)
 ```
+![핵심 결과](/images/7%20핵심결과%20스크린샷.png)
 
 ---
 
