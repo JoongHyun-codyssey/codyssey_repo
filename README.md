@@ -416,8 +416,10 @@ This message shows that your installation appears to be working correctly.
 
 ```bash
 $ docker stats --no-stream
+
 출력 결과
-CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT   MEM %     NET I/O   BLOCK I/O   PIDS 
+CONTAINER ID   NAME             CPU %     MEM USAGE / LIMIT     MEM %     NET I/O         BLOCK I/O     PIDS
+013d47daedd5   boring_khorana   0.00%     3.871MiB / 15.67GiB   0.02%     1.13kB / 126B   17.9MB / 0B   1 
  
 ```
 
