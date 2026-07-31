@@ -697,6 +697,7 @@ CONTAINER ID   IMAGE                 COMMAND                   CREATED        ST
 $ docker run -p [변경할 호스트 포트번호]:[컨테이너 포트 번호] nginx
 
 ---
+```
 
 ## 9. Docker 볼륨 영속성 검증
 
